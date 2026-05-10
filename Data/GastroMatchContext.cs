@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using GastroMatch.Admin.Models;
 
 namespace GastroMatch.Admin.Data
 {
@@ -8,6 +9,9 @@ namespace GastroMatch.Admin.Data
             : base(options)
         {
         }
+
+        public DbSet<Restaurante> Restaurantes { get; set; }
+        public DbSet<Plato> Platos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
