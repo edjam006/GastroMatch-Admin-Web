@@ -1,0 +1,11 @@
+.dockerignore
+.git
+.vscode
+bin/
+obj/
+publish/
+/bin
+/obj
+*.swp
+*.zip
+.env
