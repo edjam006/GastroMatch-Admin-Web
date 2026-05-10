@@ -1,10 +1,10 @@
-@model IEnumerable<GastroMatch.Admin.Models.Restaurante>
+@model IEnumerable<GastroMatch.Admin.Models.Plato>
 
 @{
-    ViewData["Title"] = "Restaurantes";
+    ViewData["Title"] = "Platos";
 }
 
-<h1>Restaurantes</h1>
+<h1>Platos</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-primary">Crear Nuevo</a>
@@ -14,9 +14,9 @@
     <thead class="table-dark">
         <tr>
             <th>@Html.DisplayNameFor(model => model.Nombre)</th>
-            <th>@Html.DisplayNameFor(model => model.Direccion)</th>
-            <th>@Html.DisplayNameFor(model => model.Email)</th>
-            <th>@Html.DisplayNameFor(model => model.RUC)</th>
+            <th>@Html.DisplayNameFor(model => model.Precio)</th>
+            <th>@Html.DisplayNameFor(model => model.Calorias)</th>
+            <th>Restaurante</th>
             <th>Categoría</th>
             <th>Acciones</th>
         </tr>
@@ -26,10 +26,10 @@
         {
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
-                <td>@Html.DisplayFor(modelItem => item.Direccion)</td>
-                <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                <td>@Html.DisplayFor(modelItem => item.RUC)</td>
-                <td>@item.Categoria?.Nombre</td>
+                <td>@item.Precio.ToString("C2")</td>
+                <td>@Html.DisplayFor(modelItem => item.Calorias)</td>
+                <td>@item.Restaurante?.Nombre</td>
+                <td>@item.Restaurante?.Categoria?.Nombre</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalles</a>

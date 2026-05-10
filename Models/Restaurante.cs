@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GastroMatch.Admin.Models
 {
@@ -23,7 +24,15 @@ namespace GastroMatch.Admin.Models
         [RegularExpression(@"^\d{13}$", ErrorMessage = "El RUC debe tener exactamente 13 caracteres numéricos.")]
         public string RUC { get; set; } = string.Empty;
 
+        // Foreign Key hacia Categoria
+        [Required(ErrorMessage = "La categoría es obligatoria.")]
+        public int CategoriaId { get; set; }
+
+        [ForeignKey("CategoriaId")]
+        public Categoria? Categoria { get; set; }
+
         // Relación: Un restaurante tiene muchos platos
         public ICollection<Plato> Platos { get; set; } = new List<Plato>();
     }
 }
+

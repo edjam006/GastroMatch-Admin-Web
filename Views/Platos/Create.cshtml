@@ -1,0 +1,98 @@
+@model GastroMatch.Admin.Models.Plato
+
+@{
+    ViewData["Title"] = "Crear Plato";
+}
+
+<h1>Crear Plato</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label class="control-label fw-bold">Categoría</label>
+                <select id="CategoriaId" class="form-control">
+                    <option value="">-- Seleccione una categoría --</option>
+                    @if (ViewData["Categorias"] is Microsoft.AspNetCore.Mvc.Rendering.SelectList categorias)
+                    {
+                        @foreach (var cat in categorias)
+                        {
+                            <option value="@cat.Value">@cat.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="RestauranteId" class="control-label fw-bold">Restaurante</label>
+                <select asp-for="RestauranteId" class="form-control" id="RestauranteId" disabled>
+                    <option value="">-- Primero seleccione una categoría --</option>
+                </select>
+                <span asp-validation-for="RestauranteId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Nombre" class="control-label fw-bold"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Precio" class="control-label fw-bold"></label>
+                <input asp-for="Precio" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Calorias" class="control-label fw-bold"></label>
+                <input asp-for="Calorias" class="form-control" type="number" />
+                <span asp-validation-for="Calorias" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-4">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            // Dropdown en cascada: Categoría -> Restaurante
+            $('#CategoriaId').change(function () {
+                var categoriaId = $(this).val();
+                var restauranteDropdown = $('#RestauranteId');
+
+                // Limpiar y deshabilitar el dropdown de restaurantes
+                restauranteDropdown.empty();
+                restauranteDropdown.append('<option value="">-- Seleccione un restaurante --</option>');
+
+                if (categoriaId === '' || categoriaId === null) {
+                    restauranteDropdown.prop('disabled', true);
+                    return;
+                }
+
+                // Petición AJAX al endpoint del controlador
+                $.get('@Url.Action("GetRestaurantesByCategoria", "Platos")', { categoriaId: categoriaId }, function (data) {
+                    if (data.length > 0) {
+                        $.each(data, function (index, item) {
+                            restauranteDropdown.append(
+                                $('<option></option>').val(item.id).text(item.nombre)
+                            );
+                        });
+                        restauranteDropdown.prop('disabled', false);
+                    } else {
+                        restauranteDropdown.append('<option value="">-- No hay restaurantes en esta categoría --</option>');
+                        restauranteDropdown.prop('disabled', true);
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -12,6 +12,7 @@ namespace GastroMatch.Admin.Data
 
         public DbSet<Restaurante> Restaurantes { get; set; }
         public DbSet<Plato> Platos { get; set; }
+        public DbSet<Categoria> Categorias { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

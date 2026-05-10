@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GastroMatch.Admin.Data;
 using GastroMatch.Admin.Models;
@@ -17,7 +18,7 @@ namespace GastroMatch.Admin.Controllers
         // GET: Restaurantes
         public async Task<IActionResult> Index()
         {
-            var restaurantes = await _context.Restaurantes.ToListAsync();
+            var restaurantes = await _context.Restaurantes.Include(r => r.Categoria).ToListAsync();
             return View(restaurantes);
         }
 
@@ -28,6 +29,7 @@ namespace GastroMatch.Admin.Controllers
                 return NotFound();
 
             var restaurante = await _context.Restaurantes
+                .Include(r => r.Categoria)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
             if (restaurante == null)
@@ -39,13 +41,14 @@ namespace GastroMatch.Admin.Controllers
         // GET: Restaurantes/Create
         public IActionResult Create()
         {
+            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre");
             return View();
         }
 
         // POST: Restaurantes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Direccion,Email,RUC")] Restaurante restaurante)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Direccion,Email,RUC,CategoriaId")] Restaurante restaurante)
         {
             // Validación extra del RUC en el Back-End
             if (!string.IsNullOrEmpty(restaurante.RUC))
@@ -67,6 +70,7 @@ namespace GastroMatch.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", restaurante.CategoriaId);
             return View(restaurante);
         }
 
@@ -81,13 +85,14 @@ namespace GastroMatch.Admin.Controllers
             if (restaurante == null)
                 return NotFound();
 
+            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", restaurante.CategoriaId);
             return View(restaurante);
         }
 
         // POST: Restaurantes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Direccion,Email,RUC")] Restaurante restaurante)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Direccion,Email,RUC,CategoriaId")] Restaurante restaurante)
         {
             if (id != restaurante.Id)
                 return NotFound();
@@ -122,6 +127,7 @@ namespace GastroMatch.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", restaurante.CategoriaId);
             return View(restaurante);
         }
 
@@ -132,6 +138,7 @@ namespace GastroMatch.Admin.Controllers
                 return NotFound();
 
             var restaurante = await _context.Restaurantes
+                .Include(r => r.Categoria)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
             if (restaurante == null)
